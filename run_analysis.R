@@ -18,3 +18,22 @@ DataNew <- Data %>%
            select(s, c, contains("mean"), contains("std"))
 #renamed
 DataNew$c <- Activities[DataNew$c,2]
+#labels data
+names(DataNew)[2] = "activity"
+names(DataNew)<-gsub("Acc", "Accelerometer", names(DataNew))
+names(DataNew)<-gsub("Gyro", "Gyroscope", names(DataNew))
+names(DataNew)<-gsub("BodyBody", "Body", names(DataNew))
+names(DataNew)<-gsub("Mag", "Magnitude", names(DataNew))
+names(DataNew)<-gsub("^t", "Time", names(DataNew))
+names(DataNew)<-gsub("^f", "Frequency", names(DataNew))
+names(DataNew)<-gsub("tBody", "TimeBody", names(DataNew))
+names(DataNew)<-gsub("-mean()", "Mean", names(DataNew), ignore.case = TRUE)
+names(DataNew)<-gsub("-std()", "STD", names(DataNew), ignore.case = TRUE)
+names(DataNew)<-gsub("-freq()", "Frequency", names(DataNew), ignore.case = TRUE)
+names(DataNew)<-gsub("angle", "Angle", names(DataNew))
+names(DataNew)<-gsub("gravity", "Gravity", names(DataNew))
+#Average of each variable
+DataFinal <- DataNew %>%
+             group_by(s,activity) %>%
+             summarise_all(funs(mean))
+write.table(DataFinal, "DataFinal.txt", row.names = F)
